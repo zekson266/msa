@@ -1,0 +1,80 @@
+version: "3.8"
+services:
+
+  # Nginx Server
+  nginx:
+    image: nginx:latest
+    container_name: nginx_cont
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    ports:
+        - 443:443
+        - 80:80
+    volumes:
+        - ./:/var/www
+        - ./fullchain.pem:/etc/nginx/ssl/fullchain.pem
+        - ./privkey.pem:/etc/nginx/ssl/privkey.pem
+        - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - internal
+    depends_on:
+
+      - database
+      - redis
+    
+  #PHP Service
+  php:
+    container_name: php_cont
+    build:
+      context: .
+      target: php
+      args:
+        - APP_ENV=${APP_ENV}
+    environment:
+      - APP_ENV=${APP_ENV}
+      - CONTAINER_ROLE=app
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - internal
+    ports:
+       - 8000:8000
+    depends_on:
+       - database
+       - redis
+
+  # Databse Server
+  database:
+    container_name: mysql_cont
+    image: 'mysql:8.0'
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - internal
+
+  # Redis Server
+  redis:
+    container_name: redis_cont
+    image: redis:alpine
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    ports:
+      - 6379:6379
+    networks:
+      - internal
+
+volumes:
+    db-data: ~
+
+networks:
+  internal:
+    driver: bridge
