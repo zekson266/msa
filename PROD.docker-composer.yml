@@ -10,12 +10,12 @@ services:
       dockerfile: Dockerfile
     
     ports:
-        # - 443:443
+        - 443:443
         - 80:80
     volumes:
         - ./:/var/www
-        # - ./fullchain.pem:/etc/nginx/ssl/fullchain.pem
-        # - ./privkey.pem:/etc/nginx/ssl/privkey.pem
+        - ./fullchain.pem:/etc/nginx/ssl/fullchain.pem
+        - ./privkey.pem:/etc/nginx/ssl/privkey.pem
         - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
       - internal
