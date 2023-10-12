@@ -14,3 +14,47 @@ div#root {
   all: initial;
 }
 
+
+
+.nav {
+  padding: 10px;
+  margin: 10px;
+  border-bottom: solid #f2f2f2 1px;
+  display:flex;
+
+  align-items: center;
+  flex-wrap: wrap;
+
+}
+
+.title {
+  font-size:x-large;
+  color: #f1356d;
+  flex-grow: 1;
+ 
+  background-color: aqua;
+  
+}
+
+.links {
+  background-color: bisque;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: end;
+ 
+}
+
+.links a{
+
+  margin: 10px;
+  text-decoration: none;  
+
+}
+
+
+.nav h2 {
+  color: #f1356d;
+}
+
+ 

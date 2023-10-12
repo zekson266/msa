@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { useUserContext } from "../../contexts/UserContextProvider";
 import axiosClient from "../../axios-client";
+import { Link } from "react-router-dom";
+
 
 export default function Login() {
 
@@ -31,8 +33,8 @@ export default function Login() {
   }
 
   return (
-    <div className="d-flex justify-content-center align-items-center mt-5">
-      <form onSubmit={onSubmit} className="col-6 text-align-center">
+    <div className="content">
+      <form onSubmit={onSubmit} className="login-form">
         { errors &&
           <div class="alert alert-danger d-flex align-items-start flex-column" role="alert">
           {
@@ -51,8 +53,11 @@ export default function Login() {
           <label htmlFor="password" className="form-label ">Password: </label>
           <input ref={passwordRef} type="password" className="form-control"/>
         </div>
+        <div className="mb-3 text-center">
+          Haven't accont yet? Please <Link to="/signup">signup</Link>.
+        </div>
         <div>
-          <button type="submit" className="btn btn-outline-primary btn-sm">Login</button>
+          <button type="submit" className="btn btn-outline-primary btn-sm form-control">Login</button>
         </div>
       </form>
     </div>

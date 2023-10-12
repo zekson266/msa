@@ -15,16 +15,6 @@ div#root {
   max-width: 500px;
   margin: 0 auto;
 }
-.content {
-  height: 100vh;
-  height: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  border: #f1356d 1px solid;
-
-}
 
 .nav {
   display: flex;
@@ -55,4 +45,28 @@ div#root {
   padding: 3px;
   flex-grow: 1;
   text-align: end;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  /* align-items: start; */
+  /* height: 90vh; */
+  flex-wrap: wrap;
+}
+
+.content .element {
+  flex-basis: 100%;
+}
+
+.login-form {
+  flex-basis: 60%;
+}
+
+.login-input {
+  width: 100%;
+}
+
+.login-form a {
+  text-decoration: none;
 }

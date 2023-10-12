@@ -1,7 +1,6 @@
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContextProvider";
-import { useState, Link, useEffect } from "react";
-import LoginForm from "./auth/Login";
+import { useEffect } from "react";
 import axiosClient from "../axios-client";
 
 export default function MainLayout() {
@@ -38,7 +37,7 @@ export default function MainLayout() {
         <div className="links">
           <NavLink to="#">Link</NavLink>
           <NavLink to="#">Link</NavLink>
-          <NavLink to="signup">Signup</NavLink>
+          <NavLink to="users">Users</NavLink>
           <NavLink onClick={handleLogout}>User: {user.name}</NavLink>
         </div>
       </div>

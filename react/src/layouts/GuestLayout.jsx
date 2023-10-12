@@ -31,7 +31,7 @@ export default function MainLayout() {
         <div className="links">
           <NavLink to="#">Link</NavLink>
           <NavLink to="#">Link</NavLink>
-          <NavLink to="signup">Signup</NavLink>
+          <NavLink to="/signup">Signup</NavLink>
           <NavLink to="login">Login</NavLink>
         </div>
       </div>
