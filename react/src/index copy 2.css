@@ -15,16 +15,6 @@ div#root {
   max-width: 500px;
   margin: 0 auto;
 }
-.content {
-  height: 100vh;
-  height: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  border: #f1356d 1px solid;
-
-}
 
 .nav {
   display: flex;
@@ -56,3 +46,23 @@ div#root {
   flex-grow: 1;
   text-align: end;
 }
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
+  /* text-align: end; */
+  
+}
+
+.form-item {
+  padding: 5px;
+  flex-grow: 1;
+}
+
+.form-item input {
+  width: 100%;
+}
+
+ 

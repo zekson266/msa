@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axiosClient from "../../axios-client";
 import { useUserContext } from "../../contexts/UserContextProvider";
 
@@ -8,8 +8,9 @@ export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
+  const [errors,setErrors] = useState();
 
-  const {setUser, setToken } = useUserContext();
+  const {setUser, setToken, setNotification} = useUserContext();
 
   const onSubmit = (ev) => {
       ev.preventDefault();
@@ -20,53 +21,56 @@ export default function Signup() {
         password_confirmation: passwordConfirmationRef.current.value,
       }
 
-      console.log(payLoad);
       axiosClient.post('signup',payLoad)
       .then(({data})=>{
-        setUser(data.toke);
+        setUser(data.user);
         setToken(data.token);
       })
       .catch(err=>{
         const response = err.response;
-        if(response & response.status === 422){
-          console.log(response.data.errors);
+        if(response && response.status === 422){
+          setErrors(response.data.errors);
+          
         }
+        setErrors(response.data.errors);
+          
       })
   }
 
-    return (
-      <div className="d-flex justify-content-center align-items-center">
-        <form className="border p-4 rounded" onSubmit={onSubmit}>
-          <h3 className="text-center">Sign Up</h3>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">
-              Name
-            </label>
-            <input ref={nameRef} type="text" className="form-control" id="name" />
+  return (
+    <div className="d-flex justify-content-center align-items-center mt-5">
+      <form onSubmit={onSubmit} className="col-6 text-align-center">
+        { errors &&
+          <div class="alert alert-danger d-flex align-items-start flex-column" role="alert">
+          {
+            Object.keys(errors).map(key=>(
+            <span key={key}>{errors[key][0]}</span>
+          ))
+          }
           </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input ref={emailRef} type="email" className="form-control" id="email" />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input ref={passwordRef} type="password" className="form-control" id="password" />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password confirmation
-            </label>
-            <input ref={passwordConfirmationRef} type="password" className="form-control" id="password_confirmation" />
-          </div>
-          <button type="submit" className="btn btn-outline-primary w-100">
-            Sign Up
-          </button>
-        </form>
-      </div>
-    );
-  }
+        }
+        <h2 className="text-center">Signup</h2>
+        <div className="mb-3">
+          <label className="form-label">Name: </label>
+          <input ref={nameRef} type="text" className="form-control" />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Email: </label>
+          <input ref={emailRef} type="email" className="form-control" />
+        </div>
+        <div className="mb-3">
+          <label className="form-label ">Password: </label>
+          <input ref={passwordRef} type="password" className="form-control"/>
+        </div>
+        <div className="mb-3">
+          <label className="form-label ">Password confirmation: </label>
+          <input ref={passwordConfirmationRef} type="password" className="form-control"/>
+        </div>
+        <div className="text-center">
+          <button type="submit" className="btn btn-outline-primary btn-sm">Signup</button>
+        </div>
+      </form>
+    </div>
+  );
+}
   

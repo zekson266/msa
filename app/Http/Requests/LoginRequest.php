@@ -29,6 +29,8 @@ class LoginRequest extends FormRequest
             ],
             'remember' => 'boolean'
         */
+        'email'=>['required'],
+        'password'=>['required']
         ];
     }
 }

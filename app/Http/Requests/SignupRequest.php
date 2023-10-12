@@ -34,6 +34,9 @@ class SignupRequest extends FormRequest
                     ->numbers()
             ]
         */
+            'name'=>['required'],
+            'email'=>['required', 'email', 'unique:users,email'],
+            'password'=>['required']
         ];
     }
 }

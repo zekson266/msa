@@ -1,6 +1,6 @@
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContextProvider";
-import { useState, Link, useEffect } from "react";
+import { useState, Link } from "react";
 import LoginForm from "./auth/Login";
 import axiosClient from "../axios-client";
 
@@ -8,8 +8,8 @@ export default function MainLayout() {
 
    const {token, user, setUser, setToken, notification, setNotification} = useUserContext();
     
-    if(!token){
-      return <Navigate to="/login" />
+    if(token){
+      return <Navigate to="/" />
     }
 
     const handleLogout = (ev) => {
@@ -21,30 +21,21 @@ export default function MainLayout() {
         })
     }
 
-    useEffect(()=>{
-      axiosClient.get('user')
-      .then(({data})=>{
-        setUser(data);
-      })
-    },[])
-
   return (
     <div className="container">
 
       <div className="nav">
         <div className="title">
-          <span>Цуравий селеп U</span>
+          <span>Цуравий селеп G</span>
         </div>
         <div className="links">
           <NavLink to="#">Link</NavLink>
           <NavLink to="#">Link</NavLink>
           <NavLink to="signup">Signup</NavLink>
-          <NavLink onClick={handleLogout}>User: {user.name}</NavLink>
+          <NavLink to="login">Login</NavLink>
         </div>
       </div>
 
-        { notification && <span>Mesage: { notification }</span> }
-      
       <div>
         <Outlet />
       </div>

@@ -27,17 +27,17 @@ class AuthController extends Controller
 
         $token = $user->createToken('main')->plainTextToken;
 
-        return response(compact('uesr','token'));
+        return response(compact('user','token'));
     }
     //=================================================================
     public function login(LoginRequest $request){
         
         $credentials = $request->validated();
-
+        
         if(!Auth::attempt($credentials)){
             return response([
                 'message' => __('Provided email or password is incorect')
-            ]);
+            ],422);
         }
         /** @var \App\Models\User $user */
 
@@ -45,14 +45,14 @@ class AuthController extends Controller
 
         $token = $user->createToken('main')->plainTextToken;
 
-        return response(compact('uesr','token'));
+        return response(compact('user','token'));
     }
     //=================================================================
     public function logout(Request $request){
 
         /** @var \App\Models\User $user */
         
-        $user->$request->user();
+        $user = $request->user();
         $user->currentAccessToken()->delete();
         return response('',204);
     }

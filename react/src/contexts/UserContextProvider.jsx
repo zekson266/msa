@@ -3,12 +3,15 @@ import { createContext, useContext, useState } from "react";
 const UserContext = createContext({
     user: null,
     token: null,
+    notification: null,
     setUser: () => {},
     setToken: () => {},
+    setNotification: () => {},
 })
 
 export const ContextProvider = ({children}) => {
 
+    const [notification,setNotification] = useState(null);
     const [user,setUser] = useState({});
     const [token,_setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
 
@@ -18,7 +21,8 @@ export const ContextProvider = ({children}) => {
             localStorage.setItem('ACCESS_TOKEN',token);
         }
         else{
-            localStorage.removeItem('ACCESS_TOKEN');
+            debugger;
+            localStorage.removeItem('ACCESS_TOKE');
         }
     }
 
@@ -26,10 +30,14 @@ export const ContextProvider = ({children}) => {
         <UserContext.Provider value={{
             user,
             token,
+            notification,
             setUser,
-            setToken
+            setToken,
+            setNotification,
         }}>
-            {children}
+
+            { children }
+
         </UserContext.Provider>
     );
 }
