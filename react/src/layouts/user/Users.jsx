@@ -12,6 +12,18 @@ export default function Users() {
         getUsers();
     },[])
 
+    const onDelete = user => {
+        if(!window.confirm('are you sure to delete '+user.name+'?')){
+            return ;
+        }
+
+        axiosClient.delete(`/users/${user.id}`)
+        .then(()=>{
+
+            getUsers();
+        })
+    }
+
     const getUsers = () => {
         setLoading(true);
         axiosClient.get('/users')
@@ -31,9 +43,9 @@ export default function Users() {
             <h2>Users list</h2>
         </div>
         <div className="element text-center">
-            <Link to="">New users</Link>
+            <Link to="/users/new">New users</Link>
         </div>
-        <div className="">
+        <div className="users-table">
             <table>
                 <thead>
                     <tr>
@@ -44,7 +56,12 @@ export default function Users() {
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                {loading && <tbody>
+                    <tr>
+                        <td colSpan="5">Loading...</td>
+                    </tr>
+                </tbody>}
+                {!loading && <tbody>
                     {users.map(u => (
                         <tr key={u.id}>
                             <td>{u.id}</td>
@@ -53,11 +70,11 @@ export default function Users() {
                             <td>{u.created_at}</td>
                             <td>
                                 <Link to={'/users/'+u.id}>Edit</Link>
-                                <button>Delete</button>
+                                <button onClick={ev => onDelete(u)}>Delete</button>
                             </td>
                         </tr>
                     ))}
-                </tbody>
+                </tbody>}
             </table>
         </div>
     </div>

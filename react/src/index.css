@@ -45,14 +45,17 @@ div#root {
   padding: 3px;
   flex-grow: 1;
   text-align: end;
+  font-size: 12px;
 }
 
 .content {
   display: flex;
   justify-content: center;
-  /* align-items: start; */
+  align-items: start;
   /* height: 90vh; */
   flex-wrap: wrap;
+  margin: 5px;
+  background-color: antiquewhite;
 }
 
 .content .element {
@@ -69,4 +72,8 @@ div#root {
 
 .login-form a {
   text-decoration: none;
+}
+
+.users-table {
+  font-size: 10px;
 }

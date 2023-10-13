@@ -4,6 +4,7 @@ import GuestLayout from './layouts/GuestLayout';
 import Login from './layouts/auth/Login';
 import Signup from './layouts/auth/Signup';
 import Users from './layouts/user/Users';
+import UserForm from './layouts/user/UserForm';
 
 const router = createBrowserRouter([
     {
@@ -17,13 +18,13 @@ const router = createBrowserRouter([
                 // loader
             },
             {
-                path: '/user/new',
-                //element: <Signup />,
+                path: '/users/new',
+                element: <UserForm />,
                 // loader
             },
             {
-                path: '/user/:id',
-                //element: <Signup />,
+                path: '/users/:id',
+                element: <UserForm />,
                 // loader
             },
         ],
