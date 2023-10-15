@@ -35,7 +35,7 @@ export default function UserForm() {
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        debugger;
+
         if(user.id){
             axiosClient.put(`/users/${user.id}`,user)
             .then(()=>{
@@ -71,11 +71,11 @@ export default function UserForm() {
     }
 
     return (
-    <div className="content">
+    <div>
         <div>
             {user.id && <h2>Users Form { user.name }</h2>}
             {!user.id && <h2>New user</h2>}
-            <div className="card animated fadeInDown">
+            <div>
                 {loading && (
                     <div>Loading...</div>
                 )}

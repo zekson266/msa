@@ -2,6 +2,13 @@ import { useRef, useState } from "react";
 import axiosClient from "../../axios-client";
 import { useUserContext } from "../../contexts/UserContextProvider";
 import { Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Alert from '@mui/material/Alert';
+import Box from "@mui/material/Box";
+import Grid from '@mui/material/Unstable_Grid2';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
 
 export default function Signup() {
 
@@ -10,11 +17,16 @@ export default function Signup() {
   const passwordRef = useRef();
   const passwordConfirmationRef = useRef();
   const [errors,setErrors] = useState();
+  const [emailError,setEmailError] = useState();
+  const [passwordError,setPasswordError] = useState();
+  const [nameError,setNameError] = useState();
+  const [passwordConfirmationError,setPasswordConfirmationError] = useState();
 
-  const {setUser, setToken, setNotification} = useUserContext();
+  const {setUser, setToken } = useUserContext();
 
   const onSubmit = (ev) => {
       ev.preventDefault();
+
       const payLoad = {
         name: nameRef.current.value,
         email: emailRef.current.value,
@@ -29,52 +41,110 @@ export default function Signup() {
       })
       .catch(err=>{
         const response = err.response;
-        if(response && response.status === 422){
-          setErrors(response.data.errors);
-          
-        }
-        setErrors(response.data.errors);
+
+        if(response && response.status === 422 && !response.data.errors)
+          setErrors(response.data.message);
+
+        if(response.data.errors && response.data.errors.email)
+          setEmailError(response.data.errors.email[0])
+        
+        if(response.data.errors && response.data.errors.password)
+          setPasswordError(response.data.errors.password[0])
+
+        if(response.data.errors && response.data.errors.name)
+          setNameError(response.data.errors.name[0])
+        
+        if(response.data.errors && response.data.errors.password_confirmation)
+          setPasswordConfirmationError(response.data.errors.password_confirmation[0])
           
       })
   }
 
   return (
-    <div className="content">
-      <form onSubmit={onSubmit} className="login-form">
-        { errors &&
-          <div class="alert alert-danger d-flex align-items-start flex-column" role="alert">
-          {
-            Object.keys(errors).map(key=>(
-            <span key={key}>{errors[key][0]}</span>
-          ))
-          }
-          </div>
-        }
-        <h2 className="text-center">Signup</h2>
-        <div className="mb-3">
-          <label className="form-label">Name: </label>
-          <input ref={nameRef} type="text" className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Email: </label>
-          <input ref={emailRef} type="email" className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label className="form-label ">Password: </label>
-          <input ref={passwordRef} type="password" className="form-control"/>
-        </div>
-        <div className="mb-3">
-          <label className="form-label ">Password confirmation: </label>
-          <input ref={passwordConfirmationRef} type="password" className="form-control"/>
-        </div>
-        <div className="mb-3 text-center">
-          Alredy have an account? Please <Link to="/login">login</Link>.
-        </div>
-        <div>
-          <button type="submit" className="btn btn-outline-primary btn-sm form-control">Signup</button>
-        </div>
-      </form>
-    </div>
+    <Grid container justifyContent="center" alignItems="center" height="80vh">
+      <Grid md={6}>
+        <Box>
+
+          { errors && <Alert margin="normal" severity="error"> {errors} </Alert> }
+          
+          <form onSubmit={onSubmit}>
+            <Typography
+              variant="h4"
+              textAlign="center"
+              margin="normal"
+            >
+              Реєстрація
+            </Typography>
+
+            <TextField
+              label="Ім'я"
+              fullWidth
+              variant="outlined"
+              inputRef={nameRef}
+              margin="normal"
+              error={Boolean(nameError)}//
+              helperText={nameError}//
+              required
+              type="text"
+            />
+
+            <TextField
+              label="Електронна адреса"
+              fullWidth
+              variant="outlined"
+              inputRef={emailRef}
+              margin="normal"
+              error={Boolean(emailError)}
+              helperText={emailError}
+              required
+              type="email"
+            />
+
+            <TextField 
+              label="Пароль"
+              fullWidth
+              variant="outlined"
+              inputRef={passwordRef}
+              margin="normal"
+              error={Boolean(passwordError)}
+              helperText={passwordError}
+              required
+              type="password"
+            />
+
+            <TextField 
+              label="Підтвердження пароля"
+              fullWidth
+              variant="outlined"
+              inputRef={passwordConfirmationRef}
+              margin="normal"
+              error={Boolean(passwordConfirmationError)}
+              helperText={passwordConfirmationError}
+              required
+              type="password"
+            />
+
+            <Typography
+              variant="h6"
+              gutterBottom
+              textAlign="center"
+              margin="normal"
+            >
+              Уже є обліковий запис? <Link to="/login" style={{ textDecoration: "none" }}>Увійти</Link>
+            </Typography>
+        
+            <Button
+              variant="contained"
+              type="submit"
+              startIcon={<LoginIcon />}
+              fullWidth
+            >
+              Зареєструвати
+            </Button>
+          </form>
+        </Box>
+      </Grid>
+    </Grid>
   );
 }
   

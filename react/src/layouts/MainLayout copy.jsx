@@ -2,12 +2,10 @@ import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContextProvider";
 import { useEffect } from "react";
 import axiosClient from "../axios-client";
-import MsaAppBar from "./MsaAppBar";
-import Container from '@mui/material/Container';
 
 export default function MainLayout() {
 
-   const {token, user, setUser, setToken } = useUserContext();
+   const {token, user, setUser, setToken, notification, setNotification} = useUserContext();
     
     if(!token){
       return <Navigate to="/login" />
@@ -30,14 +28,26 @@ export default function MainLayout() {
     },[])
 
   return (
-    <>
-      <div >
-        <MsaAppBar name={user.name}/>
+    <div className="container">
+
+      <div className="nav">
+        <div className="title">
+          <span>Цуравий селеп U</span>
+        </div>
+        <div className="links">
+          <NavLink to="#">Link</NavLink>
+          <NavLink to="#">Link</NavLink>
+          <NavLink to="users">Users</NavLink>
+          <NavLink onClick={handleLogout}>User: {user.name}</NavLink>
+        </div>
       </div>
 
-      <Container maxWidth="sm" >
+        { notification && <span>Mesage: { notification }</span> }
+      
+      <div className="content">
         <Outlet />
-      </Container>
-    </>
+      </div>
+
+    </div>
   );
 }

@@ -20,13 +20,13 @@ div#root {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  margin: 5px;
+  /* margin: 5px; */
   border-bottom: solid 1px #f2f2f2;
 }
 
 .title {
   flex-grow: 1;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 .title span{
@@ -37,7 +37,7 @@ div#root {
 .links {
   flex-grow: 1;
   display: flex;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 .links a {
@@ -45,24 +45,5 @@ div#root {
   padding: 3px;
   flex-grow: 1;
   text-align: end;
+  font-size: 12px;
 }
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  margin: 0 auto;
-  /* text-align: end; */
-  
-}
-
-.form-item {
-  padding: 5px;
-  flex-grow: 1;
-}
-
-.form-item input {
-  width: 100%;
-}
-
- 

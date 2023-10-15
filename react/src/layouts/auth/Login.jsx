@@ -2,7 +2,13 @@ import { useRef, useState } from "react";
 import { useUserContext } from "../../contexts/UserContextProvider";
 import axiosClient from "../../axios-client";
 import { Link } from "react-router-dom";
-
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
+import TextField from "@mui/material/TextField";
+import Alert from '@mui/material/Alert';
+import Box from "@mui/material/Box";
+import Grid from '@mui/material/Unstable_Grid2';
 
 export default function Login() {
 
@@ -10,14 +16,21 @@ export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const [errors,setErrors] = useState();
+  const [emailError,setEmailError] = useState();
+  const [passwordError,setPasswordError] = useState();
 
   const onSubmit = (ev) => {
     ev.preventDefault();
+
+    setErrors('');
+    setEmailError('');
+    setPasswordError('');
+
     const payLoad = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     }
-    console.log(payLoad);
+    
     axiosClient.post('login',payLoad)
     .then(({data})=>{
       setUser(data.user);
@@ -25,42 +38,80 @@ export default function Login() {
     })
     .catch(err => {
       const response = err.response;
-      if(response && response.status === 422){
-        setErrors(response.data.errors);
-      }
-      setErrors(response.data.errors);
+
+      if(response && response.status === 422 && !response.data.errors)
+        setErrors(response.data.message);
+
+      if(response.data.errors && response.data.errors.email)
+        setEmailError(response.data.errors.email[0])
+      
+      if(response.data.errors && response.data.errors.password)
+        setPasswordError(response.data.errors.password[0])
+
     })
   }
 
   return (
-    <div className="content">
-      <form onSubmit={onSubmit} className="login-form">
-        { errors &&
-          <div class="alert alert-danger d-flex align-items-start flex-column" role="alert">
-          {
-            Object.keys(errors).map(key=>(
-            <span key={key}>{errors[key][0]}</span>
-          ))
-          }
-          </div>
-        }
-        <h2 className="text-center">Login</h2>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email: </label>
-          <input ref={emailRef} type="email" className="form-control" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label ">Password: </label>
-          <input ref={passwordRef} type="password" className="form-control"/>
-        </div>
-        <div className="mb-3 text-center">
-          Haven't accont yet? Please <Link to="/signup">signup</Link>.
-        </div>
-        <div>
-          <button type="submit" className="btn btn-outline-primary btn-sm form-control">Login</button>
-        </div>
-      </form>
-    </div>
+    <Grid container justifyContent="center" alignItems="center" height="80vh">
+      <Grid md={6}>
+        <Box>
+
+          { errors && <Alert margin="normal" severity="error"> {errors} </Alert> }
+          
+          <form onSubmit={onSubmit}>
+            <Typography
+              variant="h4"
+              textAlign="center"
+              margin="normal"
+            >
+              Вхід
+            </Typography>
+
+            <TextField
+              label="Електронна адреса"
+              fullWidth
+              variant="outlined"
+              inputRef={emailRef}
+              margin="normal"
+              error={Boolean(emailError)}
+              helperText={emailError}
+              required
+              type="email"
+            />
+
+            <TextField 
+              label="Пароль"
+              fullWidth
+              variant="outlined"
+              inputRef={passwordRef}
+              margin="normal"
+              error={Boolean(passwordError)}
+              helperText={passwordError}
+              required
+              type="password"
+            />
+
+            <Typography
+              variant="h6"
+              gutterBottom
+              textAlign="center"
+              margin="normal"
+            >
+              Не має облікового запису? <Link to="/signup" style={{ textDecoration: "none" }}>Зареєструватися</Link>
+            </Typography>
+        
+            <Button
+              variant="contained"
+              type="submit"
+              startIcon={<LoginIcon />}
+              fullWidth
+            >
+              Увійти
+            </Button>
+          </form>
+        </Box>
+      </Grid>
+    </Grid>
   );
 }
   
