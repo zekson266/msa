@@ -12,15 +12,18 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { green, pink } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import axiosClient from "../axios-client";
 import { useUserContext } from "../contexts/UserContextProvider";
+import { useNavigate } from "react-router-dom";
+
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Users', 'Logout'];
+
 
 function MsaAppBar(props) {
-
+  let navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -35,13 +38,17 @@ function MsaAppBar(props) {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (menuItem,ev) => {
     setAnchorElUser(null);
+    switch(menuItem){
+      case "Logout": handlingLogout(ev); break;
+      case "Users": { navigate("/users");} break;
+    }
   };
 
   const {token, user, setUser, setToken } = useUserContext();
 
-  const handleLogout = (ev) => {
+  const handlingLogout = (ev) => {
     ev.preventDefault();
         axiosClient.post('logout')
         .then(()=>{
@@ -51,7 +58,7 @@ function MsaAppBar(props) {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -163,14 +170,10 @@ function MsaAppBar(props) {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={(ev) => handleCloseUserMenu(setting,ev)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
-
-<               MenuItem onClick={handleLogout}>
-                  <Typography textAlign="center">LOGOUT</Typography>
-                </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

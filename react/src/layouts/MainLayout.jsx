@@ -4,9 +4,11 @@ import { useEffect } from "react";
 import axiosClient from "../axios-client";
 import MsaAppBar from "./MsaAppBar";
 import Container from '@mui/material/Container';
+import Box from "@mui/material/Box";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 export default function MainLayout() {
-
+  const theme = createTheme();
    const {token, user, setUser, setToken } = useUserContext();
     
     if(!token){
@@ -31,11 +33,13 @@ export default function MainLayout() {
 
   return (
     <>
-      <div >
-        <MsaAppBar name={user.name}/>
-      </div>
 
-      <Container maxWidth="sm" >
+      <MsaAppBar name={user.name}/>
+      <Box sx={{ height: {xs: '8ch', sm: '9ch', md: '10ch'}}}></Box>
+      <Container
+        maxWidth="xs"
+        sx={{ marginBottom: '3ch' }}
+      >
         <Outlet />
       </Container>
     </>
