@@ -150,7 +150,7 @@ function MsaAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={props.name ? props.name.toUpperCase() : ''} src="/static/images/avatar/2.jpg" sx={{ bgcolor: green[500]}}/>
+                <Avatar src="/static/images/avatar/2.jpg" sx={{ bgcolor: green[500]}}>{props.name ? props.name.toUpperCase().substring(0,2) : null}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

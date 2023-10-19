@@ -94,7 +94,7 @@ export default function Users() {
                                 </React.Fragment>
                             }                        
                         />
-                        <Box>
+                        <Box display="flex">
                             <IconButton aria-label="edit"color="primary" onClick={ev => navigate(`/users/${u.id}`)}>
                                 <EditIcon />
                             </IconButton>

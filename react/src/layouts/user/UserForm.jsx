@@ -169,10 +169,6 @@ export default function UserForm() {
                     value={user.email} 
                     onChange={ev => setUser({...user, email: ev.target.value})}
                 />
-                {/* <div className="mb-3">
-                    <label className="form-label">Email: </label>
-                    <input value={user.email}  onChange={ev => setUser({...user, email: ev.target.value})}type="email" className="form-control" />
-                </div> */}
 
                 <TextField 
                     label="Пароль"
@@ -195,15 +191,7 @@ export default function UserForm() {
                     onChange={ev => setUser({...user, password_confirmation: ev.target.value})}
                     type="password"
                 />
-                {/* <div className="mb-3">
-                    <label className="form-label ">Password: </label>
-            <input  onChange={ev => setUser({...user, password: ev.target.value})} type="password" className="form-control"/>
-                </div>
-                <div className="mb-3">
-                    <label className="form-label ">Password confirmation: </label>
-                <input  onChange={ev => setUser({...user, password_confirmation: ev.target.value})} type="password" className="form-control"/>
-                </div>
-                <button type="submit">Save</button> */}
+
                 <Button
                     variant="contained"
                     type="submit"
