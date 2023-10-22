@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use \App\Http\Controllers\Api\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,18 +16,17 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    
-// });
+Route::post('signup',[AuthController::class,'signup'])->name('auth.signup');
+Route::post('login',[AuthController::class,'login'])->name('auth.login');
 
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('/user',function(Request $request) {
+    Route::get('user',function(Request $request) {
         return $request->user();
     });
-    Route::post('/logout',[AuthController::class,'logout'])->name('auth.logout');
-    Route::apiResource('/users', \App\Http\Controllers\Api\UserController::class);
+    Route::post('logout',[AuthController::class,'logout'])->name('auth.logout');
+    Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
 });
 
-
-Route::post('/signup',[AuthController::class,'signup'])->name('auth.signup');
-Route::post('/login',[AuthController::class,'login'])->name('auth.login');
+Route::middleware('auth:sanctum')->group(function (){
+    Route::apiResource('posts',PostController::class);
+});

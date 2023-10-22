@@ -4,23 +4,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import LinearProgress from '@mui/material/LinearProgress';
 import Alert from '@mui/material/Alert';
-import Grid from '@mui/material/Unstable_Grid2';
 
-export default function UserForm() {
+export default function PostForm() {
 
     const {id} = useParams();
     const navigate = useNavigate();
-    const [user, setUser] = useState({
-        id: null,
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+    const [post, setPost] = useState({
+        users_id: null,
+        title: '',
+        body: '',
+        photo: null,
+        category: null,
+        active: true,
+        rating: 0,
     });
     const [loading, setLoading] = useState(false);
     const [errors,setErrors] = useState();
@@ -33,9 +33,9 @@ export default function UserForm() {
         useEffect(()=>{
             setLoading(true);
 
-            axiosClient.get(`/users/${id}`)
+            axiosClient.get(`/posts/${id}`)
             .then(({data})=>{
-                setUser(data);
+                setPost(data);
                 setLoading(false);
             })
             .catch(()=>{
@@ -47,11 +47,11 @@ export default function UserForm() {
     const onSubmit = (ev) => {
         ev.preventDefault();
 
-        if(user.id){
-            axiosClient.put(`/users/${user.id}`,user)
+        if(post.id){
+            axiosClient.put(`/posts/${post.id}`,post)
             .then(()=>{
                 //notification
-                navigate('/users')
+                navigate('/posts');
             })
             .catch(err=>{
                 const response = err.response;
@@ -73,10 +73,10 @@ export default function UserForm() {
 
             })
         } else {
-            axiosClient.post(`/users`,user)
+            axiosClient.post(`/posts`,post)
             .then(()=>{
                 //notification
-                navigate('/users')
+                navigate('/posts')
             })
             .catch(err=>{
                 const response = err.response;
@@ -121,55 +121,29 @@ export default function UserForm() {
                 </Box>
 
                 <TextField
-                    label="Ім'я"
+                    label="Заголовок статті"
                     fullWidth
                     variant="outlined"
-                    value={user.name}
+                    value={post.title}
                     margin="normal"
-                    error={Boolean(nameError)}
-                    helperText={nameError}
-                    onChange={ev => setUser({...user, name: ev.target.value})}
+                    error={Boolean(nameError)}///////////////////////////
+                    helperText={nameError}///////////////////////
+                    onChange={ev => setPost({...post, title: ev.target.value})}
                     required
                     type="text"
                 />
-                {/* <div className="mb-3">
-                    <label className="form-label">Name: </label>
-                    <input value={user.name} onChange={ev => setUser({...user, name: ev.target.value})} type="text" className="form-control" />
-                </div> */}
 
                 <TextField
-                    label="Електронна адреса"
+                    label="Текст статті"
                     fullWidth
                     variant="outlined"
                     margin="normal"
                     error={Boolean(emailError)}
                     helperText={emailError}
                     required
-                    type="email"
-                    value={user.email} 
-                    onChange={ev => setUser({...user, email: ev.target.value})}
-                />
-
-                <TextField 
-                    label="Пароль"
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    error={Boolean(passwordError)}
-                    helperText={passwordError}
-                    onChange={ev => setUser({...user, password: ev.target.value})}
-                    type="password"
-                />
-
-                <TextField 
-                    label="Підтвердження пароля"
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    error={Boolean(passwordConfirmationError)}
-                    helperText={passwordConfirmationError}
-                    onChange={ev => setUser({...user, password_confirmation: ev.target.value})}
-                    type="password"
+                    type="text"
+                    value={post.body} 
+                    onChange={ev => setPost({...post, body: ev.target.value})}
                 />
 
                 <Button

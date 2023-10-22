@@ -5,6 +5,8 @@ import Login from './layouts/auth/Login';
 import Signup from './layouts/auth/Signup';
 import Users from './layouts/user/Users';
 import UserForm from './layouts/user/UserForm';
+import Posts from './layouts/post/Posts';
+import PostForm from './layouts/post/PostForm';
 
 const router = createBrowserRouter([
     {
@@ -13,7 +15,7 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children:[
             {
-                path: 'users',
+                path: '/users',
                 element: <Users />,
                 // loader
             },
@@ -25,6 +27,21 @@ const router = createBrowserRouter([
             {
                 path: '/users/:id',
                 element: <UserForm />,
+                // loader
+            },
+            {
+                path: '/posts',
+                element: <Posts />,
+                // loader
+            },
+            {
+                path: '/posts/:id',
+                element: <PostForm />,
+                // loader
+            },
+            {
+                path: '/posts/new',
+                element: <PostForm />,
                 // loader
             },
         ],

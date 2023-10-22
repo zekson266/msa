@@ -26,6 +26,7 @@ function MsaAppBar(props) {
   let navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const {user} = useUserContext();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -34,8 +35,11 @@ function MsaAppBar(props) {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (menuItem) => {
     setAnchorElNav(null);
+    switch(menuItem){
+      case "Blog": { navigate("/posts");} break;
+    }
   };
 
   const handleCloseUserMenu = (menuItem,ev) => {
@@ -46,7 +50,7 @@ function MsaAppBar(props) {
     }
   };
 
-  const {token, user, setUser, setToken } = useUserContext();
+  const {setUser, setToken } = useUserContext();
 
   const handlingLogout = (ev) => {
     ev.preventDefault();
@@ -110,7 +114,7 @@ function MsaAppBar(props) {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handleCloseNavMenu(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -139,7 +143,7 @@ function MsaAppBar(props) {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleCloseNavMenu(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -150,7 +154,7 @@ function MsaAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar src="/static/images/avatar/2.jpg" sx={{ bgcolor: green[500]}}>{props.name ? props.name.toUpperCase().substring(0,2) : null}</Avatar>
+                <Avatar src="/static/images/avatar/2.jpg" sx={{ bgcolor: green[500]}}>{user.name ? user.name.toUpperCase().substring(0,2) : null}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu
