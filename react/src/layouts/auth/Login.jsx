@@ -1,64 +1,48 @@
-import { useRef, useState } from "react";
-import { useUserContext } from "../../contexts/UserContextProvider";
+import { useEffect, useState } from "react";
+import { useAuthContext } from "../../contexts/AuthContextProvider";
 import axiosClient from "../../axios-client";
-import { Link } from "react-router-dom";
+import { Link, Form, useLocation, useNavigate, useActionData } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import TextField from "@mui/material/TextField";
 import Alert from '@mui/material/Alert';
-import Box from "@mui/material/Box";
 import Grid from '@mui/material/Unstable_Grid2';
+import Paper from "@mui/material/Paper";
+
 
 export default function Login() {
 
-  const {setUser, setToken} = useUserContext();
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const [errors,setErrors] = useState();
-  const [emailError,setEmailError] = useState();
-  const [passwordError,setPasswordError] = useState();
+  let location = useLocation();
+  let navigate = useNavigate();
+  const {setUser, setToken} = useAuthContext();
+  const actionData = useActionData();
+  const[locationState,setLocationState] = useState();
 
-  const onSubmit = (ev) => {
-    ev.preventDefault();
-
-    setErrors('');
-    setEmailError('');
-    setPasswordError('');
-
-    const payLoad = {
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
+  useEffect(()=>{
+    setLocationState(location.state?.from?.pathname || "/");
+  },[])
+  
+  useEffect(()=>{
+    if(actionData?.token){
+      setUser(actionData.user); 
+      setToken(actionData.token);
+      navigate(locationState);
     }
-    
-    axiosClient.post('login',payLoad)
-    .then(({data})=>{
-      setUser(data.user);
-      setToken(data.token);
-    })
-    .catch(err => {
-      const response = err.response;
+  },[actionData])
 
-      if(response && response.status === 422 && !response.data.errors)
-        setErrors(response.data.message);
-
-      if(response.data.errors && response.data.errors.email)
-        setEmailError(response.data.errors.email[0])
-      
-      if(response.data.errors && response.data.errors.password)
-        setPasswordError(response.data.errors.password[0])
-
-    })
+  const errorHelperString = (input) => {
+    return actionData && actionData[input] ? actionData[input] : '';
   }
-
+  
   return (
     <Grid container justifyContent="center" alignItems="center" height="80vh">
-      <Grid md={6}>
-        <Box>
+      <Grid sm={8}>
+        <Paper sx={{padding: '2ch'}}>
 
-          { errors && <Alert margin="normal" severity="error"> {errors} </Alert> }
+          { actionData && actionData.error && <Alert margin="normal" severity="error"> {actionData.error} </Alert> }
           
-          <form onSubmit={onSubmit}>
+          <Form action="/login" method="post">
             <Typography
               variant="h4"
               textAlign="center"
@@ -71,28 +55,28 @@ export default function Login() {
               label="Електронна адреса"
               fullWidth
               variant="outlined"
-              inputRef={emailRef}
               margin="normal"
-              error={Boolean(emailError)}
-              helperText={emailError}
               required
               type="email"
+              name="email"
+              error={Boolean(errorHelperString('email'))}
+              helperText={errorHelperString('email')}
             />
 
             <TextField 
               label="Пароль"
               fullWidth
               variant="outlined"
-              inputRef={passwordRef}
               margin="normal"
-              error={Boolean(passwordError)}
-              helperText={passwordError}
               required
               type="password"
+              name="password"
+              error={Boolean(errorHelperString('password'))}
+              helperText={errorHelperString('password')}
             />
 
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
               textAlign="center"
               margin="normal"
@@ -108,10 +92,31 @@ export default function Login() {
             >
               Увійти
             </Button>
-          </form>
-        </Box>
+          </Form>
+        </Paper>
       </Grid>
     </Grid>
   );
+}
+
+export const LoginAction = async ({ request }) => {
+  const form = await request.formData();
+  const payLoad = Object.fromEntries(form.entries());
+
+  try{
+
+    const response = await axiosClient.post('/login', payLoad);
+    const {data} = response;
+    return data;
+
+  } catch(err) {
+
+    const response = err.response;
+  
+    if(!response.data.errors){
+      return { error: response.data.message};
+    }
+    return response.data.errors;
+  }
 }
   

@@ -23,8 +23,9 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             //
-            'title'=>['nullable'],
-            'body'=>['nullable'],
+            'title'=>['required'],
+            'body'=>['required'],
+            'photo'=>['nullable']
         ];
     }
 }

@@ -1,12 +1,28 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
-import GuestLayout from './layouts/GuestLayout';
-import Login from './layouts/auth/Login';
-import Signup from './layouts/auth/Signup';
+import Login, { LoginAction } from './layouts/auth/Login';
+import Signup, { SignupAction } from './layouts/auth/Signup';
 import Users from './layouts/user/Users';
 import UserForm from './layouts/user/UserForm';
-import Posts from './layouts/post/Posts';
-import PostForm from './layouts/post/PostForm';
+import PostIndex, {PostsLoader} from './layouts/post/PostIndex';
+import PostForm, { PostFormAction, PostFormLoader } from './layouts/post/PostForm';
+import React from 'react';
+import { useAuthContext } from './contexts/AuthContextProvider';
+import Home from './layouts/Home';
+import PostLayout from './layouts/post/PostLayout';
+
+const RequireAuth = ({ children }) => {
+    
+    const { token } = useAuthContext();
+    const location = useLocation();
+
+    if(token){
+        return children;
+    } else {
+        return <Navigate to='/login' state={{ from: location}} />;
+    }
+
+}
 
 const router = createBrowserRouter([
     {
@@ -15,8 +31,13 @@ const router = createBrowserRouter([
         element: <MainLayout />,
         children:[
             {
+                path: '/',
+                element: <Home />,
+                // loader
+            },
+            {
                 path: '/users',
-                element: <Users />,
+                element: (<RequireAuth><Users /></RequireAuth>),
                 // loader
             },
             {
@@ -30,39 +51,64 @@ const router = createBrowserRouter([
                 // loader
             },
             {
-                path: '/posts',
-                element: <Posts />,
+                path: '/post',
+                element: <PostLayout />,
+                children: [
+                    {
+                        path: '',
+                        element: <PostIndex />,
+                        loader: PostsLoader,
+                    },
+                    {
+                        path: 'page/:page',
+                        element: <PostIndex />,
+                        loader: PostsLoader,
+                    },
+                    {
+                        path: ':id',
+                        element: <PostForm />,
+                        action: PostFormAction,
+                        loader: PostFormLoader,
+                    },
+                    {
+                        path: 'new',
+                        element: <PostForm />,
+                        action: PostFormAction,
+                    }
+                ]
+            },
+            {
+                path: '/login',
+                element: <Login />,
+                action: LoginAction,
                 // loader
             },
             {
-                path: '/posts/:id',
-                element: <PostForm />,
-                // loader
-            },
-            {
-                path: '/posts/new',
-                element: <PostForm />,
+                path: '/signup',
+                element: <Signup />,
+                action: SignupAction,
                 // loader
             },
         ],
     },
-    {
-        path: '/',
-        //loader: rootLoader,
-        element: <GuestLayout />,
-        children:[
-            {
-                path: 'login',
-                element: <Login />,
-                // loader
-            },
-            {
-                path: 'signup',
-                element: <Signup />,
-                // loader
-            },
-        ],
-    }
+    // {
+    //     path: '/',
+    //     //loader: rootLoader,
+    //     element: <GuestLayout />,
+    //     children:[
+    //         {
+    //             path: 'login',
+    //             element: <Login />,
+    
+    //             // loader
+    //         },
+    //         {
+    //             path: 'signup',
+    //             element: <Signup />,
+    //             // loader
+    //         },
+    //     ],
+    // }
 ]);
 
 export default router;

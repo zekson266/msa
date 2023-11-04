@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useState, useEffect } from "react";
 import axiosClient from "../../axios-client";
-import { useUserContext } from "../../contexts/UserContextProvider";
-import { Link } from "react-router-dom";
+import { useAuthContext } from "../../contexts/AuthContextProvider";
+import { Form, Link, useActionData, useNavigate, useLocation} from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Alert from '@mui/material/Alert';
 import Box from "@mui/material/Box";
@@ -12,62 +12,36 @@ import LoginIcon from '@mui/icons-material/Login';
 
 export default function Signup() {
 
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmationRef = useRef();
-  const [errors,setErrors] = useState();
-  const [emailError,setEmailError] = useState();
-  const [passwordError,setPasswordError] = useState();
-  const [nameError,setNameError] = useState();
-  const [passwordConfirmationError,setPasswordConfirmationError] = useState();
+  let location = useLocation();
+  let navigate = useNavigate();
+  const {setUser, setToken} = useAuthContext();
+  const actionData = useActionData();
+  const[locationState,setLocationState] = useState();
 
-  const {setUser, setToken } = useUserContext();
+  useEffect(()=>{
+    setLocationState(location.state?.from?.pathname || "/");
+  },[])
+  
+  useEffect(()=>{
+    if(actionData?.token){
+      setUser(actionData.user); 
+      setToken(actionData.token);
+      navigate(locationState);
+    }
+  },[actionData])
 
-  const onSubmit = (ev) => {
-      ev.preventDefault();
-
-      const payLoad = {
-        name: nameRef.current.value,
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-        password_confirmation: passwordConfirmationRef.current.value,
-      }
-
-      axiosClient.post('signup',payLoad)
-      .then(({data})=>{
-        setUser(data.user);
-        setToken(data.token);
-      })
-      .catch(err=>{
-        const response = err.response;
-
-        if(response && response.status === 422 && !response.data.errors)
-          setErrors(response.data.message);
-
-        if(response.data.errors && response.data.errors.email)
-          setEmailError(response.data.errors.email[0])
-        
-        if(response.data.errors && response.data.errors.password)
-          setPasswordError(response.data.errors.password[0])
-
-        if(response.data.errors && response.data.errors.name)
-          setNameError(response.data.errors.name[0])
-        
-        if(response.data.errors && response.data.errors.password_confirmation)
-          setPasswordConfirmationError(response.data.errors.password_confirmation[0])
-          
-      })
+  const errorHelperString = (input) => {
+    return actionData && actionData[input] ? actionData[input] : '';
   }
 
   return (
     <Grid container justifyContent="center" alignItems="center" height="80vh">
-      <Grid md={6}>
+      <Grid sm={8}>
         <Box>
 
-          { errors && <Alert margin="normal" severity="error"> {errors} </Alert> }
+        { actionData && actionData.error && <Alert margin="normal" severity="error"> {actionData.error} </Alert> }
           
-          <form onSubmit={onSubmit}>
+          <Form action="/signup" method="post">
             <Typography
               variant="h4"
               textAlign="center"
@@ -80,52 +54,52 @@ export default function Signup() {
               label="Ім'я"
               fullWidth
               variant="outlined"
-              inputRef={nameRef}
               margin="normal"
-              error={Boolean(nameError)}//
-              helperText={nameError}//
               required
               type="text"
+              name="name"
+              error={Boolean(errorHelperString('name'))}
+              helperText={errorHelperString('name')}
             />
 
             <TextField
               label="Електронна адреса"
               fullWidth
               variant="outlined"
-              inputRef={emailRef}
               margin="normal"
-              error={Boolean(emailError)}
-              helperText={emailError}
               required
               type="email"
+              name="email"
+              error={Boolean(errorHelperString('email'))}
+              helperText={errorHelperString('email')}
             />
 
             <TextField 
               label="Пароль"
               fullWidth
               variant="outlined"
-              inputRef={passwordRef}
               margin="normal"
-              error={Boolean(passwordError)}
-              helperText={passwordError}
               required
               type="password"
+              name="password"
+              error={Boolean(errorHelperString('password'))}
+              helperText={errorHelperString('password')}
             />
 
             <TextField 
               label="Підтвердження пароля"
               fullWidth
               variant="outlined"
-              inputRef={passwordConfirmationRef}
               margin="normal"
-              error={Boolean(passwordConfirmationError)}
-              helperText={passwordConfirmationError}
               required
               type="password"
+              name="password_confirmation"
+              error={Boolean(errorHelperString('password_confirmation'))}
+              helperText={errorHelperString('password_confirmation')}
             />
 
             <Typography
-              variant="h6"
+              variant="subtitle1"
               gutterBottom
               textAlign="center"
               margin="normal"
@@ -141,10 +115,31 @@ export default function Signup() {
             >
               Зареєструвати
             </Button>
-          </form>
+          </Form>
         </Box>
       </Grid>
     </Grid>
   );
+}
+
+export const SignupAction = async ({ request }) => {
+  const form = await request.formData();
+  const payLoad = Object.fromEntries(form.entries());
+
+  try{
+
+    const response = await axiosClient.post('/signup', payLoad)
+    const {data} = response;
+    return data;
+
+  } catch(err) {
+
+    const response = err.response;
+  
+    if(!response.data.errors){
+      return { error: response.data.message};
+    }
+    return response.data.errors;
+  }
 }
   

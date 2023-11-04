@@ -7,9 +7,9 @@ export default function MainLayout() {
 
    const {token, user, setUser, setToken, notification, setNotification} = useUserContext();
     
-    if(!token){
-      return <Navigate to="/login" />
-    }
+    // if(!token){
+    //   return <Navigate to="/login" />
+    // }
 
     const handleLogout = (ev) => {
       ev.preventDefault();

@@ -1,12 +1,10 @@
 import { createContext, useContext, useState } from "react";
 
-const UserContext = createContext({
+const AuthContext = createContext({
     user: null,
     token: null,
-    notification: null,
     setUser: () => {},
     setToken: () => {},
-    setNotification: () => {},
 })
 
 export const ContextProvider = ({children}) => {
@@ -25,7 +23,7 @@ export const ContextProvider = ({children}) => {
     }
 
     return (
-        <UserContext.Provider value={{
+        <AuthContext.Provider value={{
             user,
             token,
             setUser,
@@ -34,8 +32,8 @@ export const ContextProvider = ({children}) => {
 
             { children }
 
-        </UserContext.Provider>
+        </AuthContext.Provider>
     );
 }
 
-export const useUserContext = () => useContext(UserContext)
+export const useAuthContext = () => useContext(AuthContext)

@@ -1,11 +1,11 @@
 import { NavLink, Navigate, Outlet } from "react-router-dom";
-import { useUserContext } from "../contexts/UserContextProvider";
+import { useAuthContext } from "../contexts/AuthContextProvider";
 import Container from '@mui/material/Container';
 import MsaAppBar from "./MsaAppBar";
 
 export default function MainLayout() {
 
-   const {token} = useUserContext();
+   const {token} = useAuthContext();
     
     if(token){
       return <Navigate to="/" />
