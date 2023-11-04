@@ -17,9 +17,7 @@ import Fade from '@mui/material/Fade';
 import Alert from '@mui/material/Alert';
 
 const captions = {
-    post_update_success_msg: 'Статтю успішно оновлено',
-    post_back_btn: 'Назад',
-    post_title: '',
+    post_update_success_msg: 'Статтю успішно оновлено' 
 };
 
 const  _ = (key) => {
@@ -29,15 +27,16 @@ const  _ = (key) => {
 export default function PostForm() {
 
     const actionData = useActionData();
-    const { postData } = useLoaderData() || {};
+    const { postData } = useLoaderData();// || {};
     const navigate = useNavigate();
     const inputFileRef = useRef(null);
     const tmpFileLink = useRef(null);
     const [imageLink, setImageLink] = useState();
     const [imageLoading, setImageLoading] = useState(false);
-    const [alertOpen, setAlertOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
+    const [open, setOpen] = useState(false);
+    const [message, setMessage] = useState('');
     const [alertType, setAlertType] = useState(null);
+    const [notification, setNotification] = useState();
 
     const errorHelperString = (input) => {
         return actionData &&
@@ -45,13 +44,19 @@ export default function PostForm() {
             actionData.errors[input] ? actionData.errors[input] : false;
     }
   
-    const handlingEditPhotoClick = () =>{
+    const handlingImageUpload = () =>{
         inputFileRef.current.click();
     }
 
     const showAlert = (errorMessage, type) => {
-        setAlertMessage(errorMessage);
-        setAlertOpen(true);
+        setMessage(errorMessage);
+        setOpen(true);
+        setAlertType(type);
+    };
+
+    const showAlert = (errorMessage, type) => {
+        setMessage(errorMessage);
+        setOpen(true);
         setAlertType(type);
     };
 
@@ -64,7 +69,7 @@ export default function PostForm() {
         console.log('fileObj is', fileObj);
     
         // 👇️ reset file input
-        event.target.value = null;
+        //event.target.value = null;
     
         // 👇️ is now empty
         console.log(event.target.files);
@@ -94,30 +99,44 @@ export default function PostForm() {
     };
 
     React.useEffect(()=>{
-        if(actionData?.success){
-            showAlert(_('post_update_success_msg'), 'success');
-        }
+        setNotification(actionData?.success);
     },[actionData]);
 
     return (
     <>
         <input
             style={{display: 'none'}}
-            ref={ inputFileRef }
+            ref={inputFileRef}
             type="file"
-            onChange={ handleFileChange }
+            onChange={handleFileChange}
             name="photo"
         />
 
         <Snackbar
-            sx={{ marginTop: '8ch' }}
+            sx={{marginTop: '8ch'}}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            open={ alertOpen }
-            autoHideDuration={3000} // Adjust the duration as needed
-            onClose={() => setAlertOpen(false)}
+            open={open}
+            autoHideDuration={6000} // Adjust the duration as needed
+            onClose={() => setOpen(false)}
             TransitionComponent={Fade}
         >
-            <Alert variant="filled" severity={alertType}>{ alertMessage }</Alert>
+            <Alert variant="filled" severity={alertType}>{ message }</Alert>
+        </Snackbar>
+
+        <Snackbar
+            sx={{marginTop: '8ch'}}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={notification}
+            autoHideDuration={4000} // Adjust the duration as needed
+            onClose={(event, reason) => {
+                if (reason === "clickaway") {
+                  return;
+                }
+                setNotification(false);
+            }}
+            TransitionComponent={Fade}
+        >
+            <Alert variant="filled" severity="success">{ _('post_update_success_msg') }</Alert>
         </Snackbar>
 
         <Button
@@ -127,7 +146,7 @@ export default function PostForm() {
             onClick={()=>navigate(-1)}
             sx={{ marginBottom: '2ch', background: 'white'}}
         >
-            {_('post_back_btn')}
+            Назад
         </Button>
 
         <React.Suspense fallback={<LinearProgress />}>
@@ -142,7 +161,7 @@ export default function PostForm() {
                         <CardMedia
                             component="img"
                             sx={{ height:"194px" }}
-                            image={ imageLink || postData?.photo || '/image.jpg' }
+                            image={imageLink || postData?.photo}
                             alt="The post image"
                         />
                         {imageLoading && (
@@ -163,7 +182,7 @@ export default function PostForm() {
                         <Fab  color="primary" aria-label="add"
                             sx={{   position: 'absolute', bottom: '2ch', right: '2ch' }}
                         >
-                            <EditIcon onClick={(ev) => handlingEditPhotoClick(ev)}/>
+                            <EditIcon onClick={(ev) => handlingImageUpload(ev)}/>
                         </Fab>
                     </Paper>
 
@@ -172,9 +191,8 @@ export default function PostForm() {
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: '2ch' }}
-                        required
+                        // required
                         type="text"
-                        inputProps={{ maxLength: 55 , minLength: 5 }}
                         name="title"
                         defaultValue={postData?.title}
                         error={Boolean(errorHelperString('title'))}
@@ -188,9 +206,8 @@ export default function PostForm() {
                         sx={{ marginBottom: '2ch' }}
                         multiline
                         maxRows={25}
-                        required
+                        // required
                         type="text"
-                        inputProps={{ maxLength: 2000 , minLength: 55 }}
                         name="body"
                         defaultValue={postData?.body}
                         error={Boolean(errorHelperString('body'))}

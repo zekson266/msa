@@ -18,7 +18,7 @@ class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at->locale('uk')->diffForHumans(),
             'author' => $this->user->name,
             'title' => $this->title,
             'body' => $this->body,

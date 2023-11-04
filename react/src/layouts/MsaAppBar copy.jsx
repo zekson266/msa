@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { green, orange } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import axiosClient from "../axios-client";
 import { useAuthContext } from "../contexts/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +22,11 @@ const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Users', 'Logout'];
 
 
-function MsaAppBar() {
+function MsaAppBar(props) {
   let navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const { user, setToken, setUser } = useAuthContext();
+  const {user} = useAuthContext();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -38,7 +38,7 @@ function MsaAppBar() {
   const handleCloseNavMenu = (menuItem) => {
     setAnchorElNav(null);
     switch(menuItem){
-      case "Blog": { navigate("/post");} break;
+      case "Blog": { navigate("/posts");} break;
     }
   };
 
@@ -50,14 +50,14 @@ function MsaAppBar() {
     }
   };
 
+  const {setUser, setToken } = useAuthContext();
+
   const handlingLogout = (ev) => {
     ev.preventDefault();
-    console.log("logout");
         axiosClient.post('logout')
         .then(()=>{
           setUser({});
           setToken(null);
-          navigate('/')
         })
   };
 
@@ -153,8 +153,8 @@ function MsaAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={ user.name ? handleOpenUserMenu : () => navigate('/login')   } sx={{ p: 0 }}>
-                <Avatar sx={{ bgcolor: user.name ? green[500] : orange[500] }}>{user.name ? user.name.toUpperCase().substring(0,2) : null}</Avatar>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar src="/static/images/avatar/2.jpg" sx={{ bgcolor: green[500]}}>{user.name ? user.name.toUpperCase().substring(0,2) : null}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

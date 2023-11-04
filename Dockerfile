@@ -8,4 +8,7 @@ RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
     && docker-php-ext-enable redis
 
+RUN usermod -u 1000 www-data
+
 FROM nginx:alpine
+
