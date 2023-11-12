@@ -27,7 +27,8 @@ export default function Login() {
     if(actionData?.token){
       setUser(actionData.user); 
       setToken(actionData.token);
-      navigate(locationState);
+      //navigate(locationState);
+      navigate(-1);
     }
   },[actionData])
 

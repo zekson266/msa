@@ -11,4 +11,3 @@ RUN pecl install -o -f redis \
 RUN usermod -u 1000 www-data
 
 FROM nginx:alpine
-

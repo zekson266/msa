@@ -27,15 +27,13 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
 });
 
-// Route::middleware('auth:sanctum')->group(function (){
-//     Route::apiResource('posts',PostController::class);
-// });
 Route::controller(PostController::class)->group(function(){
     Route::get('/test','test')->name('test');
 
     Route::get('/post','index')->name('post.index');
-    Route::get('/post/{post}','show')->name('post.show');
+    Route::get('/post/show/{post}','show')->name('post.show');
     Route::put('/post/{post}','update')->middleware('auth:sanctum')->name('post.update');
     Route::post('/post/image_upload','image_upload')->middleware('auth:sanctum')->name('post.image_upload');
     Route::post('/post','store')->middleware('auth:sanctum')->name('post.store');
+    Route::delete('/post/{post}','destroy')->middleware('auth:sanctum')->name('post.destroy');
 });

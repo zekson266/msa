@@ -4,7 +4,8 @@ import Login, { LoginAction } from './layouts/auth/Login';
 import Signup, { SignupAction } from './layouts/auth/Signup';
 import Users from './layouts/user/Users';
 import UserForm from './layouts/user/UserForm';
-import PostIndex, {PostsLoader} from './layouts/post/PostIndex';
+import PostIndex, {PostIndexLoader} from './layouts/post/PostIndex';
+import PostShow, {PostShowLoader} from './layouts/post/PostShow';
 import PostForm, { PostFormAction, PostFormLoader } from './layouts/post/PostForm';
 import React from 'react';
 import { useAuthContext } from './contexts/AuthContextProvider';
@@ -57,18 +58,23 @@ const router = createBrowserRouter([
                     {
                         path: '',
                         element: <PostIndex />,
-                        loader: PostsLoader,
+                        loader: PostIndexLoader,
                     },
                     {
                         path: 'page/:page',
                         element: <PostIndex />,
-                        loader: PostsLoader,
+                        loader: PostIndexLoader,
                     },
                     {
-                        path: ':id',
+                        path: 'edit/:postId',
                         element: <PostForm />,
                         action: PostFormAction,
                         loader: PostFormLoader,
+                    },
+                    {
+                        path: 'show/:postId',
+                        element: <PostShow />,
+                        loader: PostShowLoader,
                     },
                     {
                         path: 'new',

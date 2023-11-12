@@ -12,48 +12,22 @@ import CardMedia from '@mui/material/CardMedia';
 import Fab from '@mui/material/Fab';
 import EditIcon from '@mui/icons-material/Edit';
 import CircularProgress from '@mui/material/CircularProgress';
-import Snackbar from '@mui/material/Snackbar';
-import Fade from '@mui/material/Fade';
-import Alert from '@mui/material/Alert';
-
-const captions = {
-    post_update_success_msg: 'Статтю успішно оновлено',
-    post_back_btn: 'Назад',
-    post_title: '',
-};
-
-const  _ = (key) => {
-    return captions[key];
-}
+import SnackbarAlert, { _ , links, useAlert } from '../../general';
 
 export default function PostForm() {
 
     const actionData = useActionData();
-    const { postData } = useLoaderData() || {};
+    const { postPromise } = useLoaderData() || {};
     const navigate = useNavigate();
     const inputFileRef = useRef(null);
     const tmpFileLink = useRef(null);
     const [imageLink, setImageLink] = useState();
     const [imageLoading, setImageLoading] = useState(false);
-    const [alertOpen, setAlertOpen] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState(null);
+    const {message, type, open, showAlert, hideAlert } = useAlert();
 
-    const errorHelperString = (input) => {
-        return actionData &&
-            actionData.errors &&
-            actionData.errors[input] ? actionData.errors[input] : false;
-    }
-  
     const handlingEditPhotoClick = () =>{
         inputFileRef.current.click();
     }
-
-    const showAlert = (errorMessage, type) => {
-        setAlertMessage(errorMessage);
-        setAlertOpen(true);
-        setAlertType(type);
-    };
 
     const handleFileChange = async event => {
         const fileObj = event.target.files && event.target.files[0];
@@ -61,20 +35,11 @@ export default function PostForm() {
           return;
         }
         setImageLoading(true);
-        console.log('fileObj is', fileObj);
-    
-        // 👇️ reset file input
+
         event.target.value = null;
-    
-        // 👇️ is now empty
-        console.log(event.target.files);
-    
-        // 👇️ can still access file object here
-        console.log(fileObj);
-        console.log(fileObj.name);
 
         var data = new FormData();
-        data.append('foo', 'bar');
+
         data.append('photo', fileObj);
 
         let response;
@@ -86,7 +51,6 @@ export default function PostForm() {
             tmpFileLink.current.value = response.data;
         } catch(err){
             response = err.response;
-            console.log(response.data.message);///////////////////////////////////////////////
             showAlert(response.data.message,'error');
         } finally{
             setImageLoading(false);
@@ -107,18 +71,10 @@ export default function PostForm() {
             type="file"
             onChange={ handleFileChange }
             name="photo"
+            accept="image/*"
         />
 
-        <Snackbar
-            sx={{ marginTop: '8ch' }}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            open={ alertOpen }
-            autoHideDuration={3000} // Adjust the duration as needed
-            onClose={() => setAlertOpen(false)}
-            TransitionComponent={Fade}
-        >
-            <Alert variant="filled" severity={alertType}>{ alertMessage }</Alert>
-        </Snackbar>
+        <SnackbarAlert message={message} open={open} type={type} onClose={hideAlert} />
 
         <Button
             variant="outlined"
@@ -127,22 +83,22 @@ export default function PostForm() {
             onClick={()=>navigate(-1)}
             sx={{ marginBottom: '2ch', background: 'white'}}
         >
-            {_('post_back_btn')}
+            {_('back_btn')}
         </Button>
 
         <React.Suspense fallback={<LinearProgress />}>
         <Await
-            resolve={postData}
+            resolve={postPromise}
             errorElement={<p>Error loading posts!</p>}
         >
-            {(postData) => (
+            {(postPromise) => (
                 <Form method="post">
                 <Paper sx={{padding: '2ch' }}>
-                    <Paper sx={{ position: 'relative', marginBottom: '2ch' }}>                         
+                    <Paper elevation={0} sx={{ position: 'relative', marginBottom: '2ch' }}>                         
                         <CardMedia
                             component="img"
                             sx={{ height:"194px" }}
-                            image={ imageLink || postData?.photo || '/image.jpg' }
+                            image={ imageLink || postPromise?.photo || '/image.jpg' }
                             alt="The post image"
                         />
                         {imageLoading && (
@@ -172,13 +128,13 @@ export default function PostForm() {
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: '2ch' }}
-                        required
                         type="text"
+                        required
                         inputProps={{ maxLength: 55 , minLength: 5 }}
                         name="title"
-                        defaultValue={postData?.title}
-                        error={Boolean(errorHelperString('title'))}
-                        helperText={errorHelperString('title')}
+                        defaultValue={postPromise?.title}
+                        error={Boolean(actionData?.errors?.title)}
+                        helperText={actionData?.errors?.title}
                     />
 
                     <TextField
@@ -192,9 +148,9 @@ export default function PostForm() {
                         type="text"
                         inputProps={{ maxLength: 2000 , minLength: 55 }}
                         name="body"
-                        defaultValue={postData?.body}
-                        error={Boolean(errorHelperString('body'))}
-                        helperText={errorHelperString('body')}
+                        defaultValue={postPromise?.body}
+                        error={Boolean(actionData?.errors?.body)}
+                        helperText={actionData?.errors?.body}
                     />
 
                     <Button
@@ -229,8 +185,8 @@ export const PostFormAction = async ({ request, params }) => {
 
     try{
 
-        if(params.id){
-            response = await axiosClient.put(`/post/${params.id}`,payLoad);
+        if(params.postId){
+            response = await axiosClient.put(`/post/${params.postId}`,payLoad);
         } else {
             response = await axiosClient.post(`/post`,payLoad);
         }
@@ -254,9 +210,9 @@ export const PostFormAction = async ({ request, params }) => {
 
 export async function PostFormLoader({ params }) {
 
-    const data  = axiosClient.get(`/post/${params.id}`).then(({data})=>data);
+    const data = axiosClient.get(links['post_show_route'] + params.postId).then(({data})=>data);
 
     return defer({
-        postData: data
+        postPromise: data
     });
 }

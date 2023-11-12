@@ -16,11 +16,11 @@ import { green, orange } from '@mui/material/colors';
 import axiosClient from "../axios-client";
 import { useAuthContext } from "../contexts/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
+import { _ , links } from '../general';
 
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Users', 'Logout'];
-
+const pages = [_('blog_menu_item')];
+const settings = [_('users_menu_item'),_('logout_menu_item')];
 
 function MsaAppBar() {
   let navigate = useNavigate();
@@ -38,15 +38,15 @@ function MsaAppBar() {
   const handleCloseNavMenu = (menuItem) => {
     setAnchorElNav(null);
     switch(menuItem){
-      case "Blog": { navigate("/post");} break;
+      case _('blog_menu_item'): { navigate("/post");} break;
     }
   };
 
   const handleCloseUserMenu = (menuItem,ev) => {
     setAnchorElUser(null);
     switch(menuItem){
-      case "Logout": handlingLogout(ev); break;
-      case "Users": { navigate("/users");} break;
+      case _('logout_menu_item'): handlingLogout(ev); break;
+      case _('users_menu_item'): { navigate("/users");} break;
     }
   };
 
@@ -70,18 +70,18 @@ function MsaAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={links['post_index']}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              // fontFamily: 'monospace',
+              // fontWeight: 700,
+              // letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Мукачево.online
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -125,19 +125,19 @@ function MsaAppBar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={links['post_index']}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              // fontFamily: 'monospace',
+              // fontWeight: 700,
+              // letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Мукачево.online
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
