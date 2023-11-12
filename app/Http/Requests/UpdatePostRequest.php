@@ -23,8 +23,8 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             //
-            'title'=>['required'],
-            'body'=>['required'],
+            'title'=>['required','string','min:5','max:55'],
+            'body'=>['required','string','min:55','max:2000'],
             'photo'=>['nullable']
         ];
     }

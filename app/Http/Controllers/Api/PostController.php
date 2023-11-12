@@ -7,10 +7,13 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
+
+use function Laravel\Prompts\error;
 
 class PostController extends Controller
 {
@@ -39,7 +42,9 @@ class PostController extends Controller
             Storage::disk('react')->copy($data['photo'], substr($data['photo'],3));
             Storage::disk('react')->delete($data['photo']);
             $data['photo'] = substr($data['photo'],3);
-         }
+        } else {
+            unset($data['photo']);
+        }
 
         $post = Post::create($data);
 
@@ -82,9 +87,20 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
-        $post->delete();
+        $photo = $post->photo;
 
-        return response('',200);
+        $post->delete();
+        
+        if (!empty($photo) && Storage::disk('react')->exists($photo)) {
+            try {
+                Storage::disk('react')->delete($photo);
+            } catch (Exception $e) {
+                // Ігноруємо помилку видалення фото і не робимо нічого
+            }
+        }
+        
+        return response('', 200);
+        
     }
 
     /**
