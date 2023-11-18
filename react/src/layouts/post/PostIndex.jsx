@@ -128,7 +128,7 @@ export default function PostIndex() {
                 <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                    { post.id }
+                    { post.comments_count }
                     </Avatar>
                   }
                   action={ post.author === user.name && (

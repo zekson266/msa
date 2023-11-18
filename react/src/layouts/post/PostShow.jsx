@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axiosClient from "../../axios-client";
-import Pagination from '@mui/material/Pagination';
-import { Await, useLoaderData, defer, useNavigate, useParams } from "react-router-dom";
+import { Await, useLoaderData, defer, useNavigate, useParams, Outlet } from "react-router-dom";
 import LinearProgress from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -24,10 +23,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useAuthContext } from '../../contexts/AuthContextProvider';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
 import Button from '@mui/material/Button';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { captions, _ , links} from '../../general';
+import Comment from '../../layouts/Comment';
 
 const menu = [captions['edit_menu_item'], captions['delete_menu_item']];
 
@@ -42,8 +41,9 @@ const ExpandMore = styled((props) => {
     }),
   }));
 
-export default function PostIndex() {
+export default function PostShow() {
 
+    const { postId } = useParams();
     const  { postPromise } = useLoaderData();
     let navigate = useNavigate();
     const [anchorElPost, setAnchorElPost] = React.useState(null);
@@ -180,10 +180,10 @@ export default function PostIndex() {
                   ))}
                 </Menu>
               )}
-
             </>)}
           </Await>
         </React.Suspense>
+        <Comment parentId={postId} parentType="Post" />
       </>
     );
 }

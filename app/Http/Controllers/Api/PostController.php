@@ -113,7 +113,7 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('photo')){
-           $path = $request->file('photo')->store('tmp/post_img/', 'react');
+           $path = $request->file('photo')->store('tmp/post_img', 'react');
         return response($path);
         }
         

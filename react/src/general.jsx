@@ -11,7 +11,10 @@ export const captions = {
     blog_menu_item: 'Новини',
     post_update_success_msg: 'Статтю успішно оновлено',
     users_menu_item: 'Користувачі',
-    logout_menu_item: 'Вийти'
+    logout_menu_item: 'Вийти',
+    add_comment_btn: 'Додати коментар',
+    comment_author_label: 'Автор',
+    comment_text_label: 'Коментар'
 };
 
 export const links = {

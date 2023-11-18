@@ -25,7 +25,8 @@ class PostResource extends JsonResource
             'photo' => $this->photo,
             'category' => $this->category,
             'rating' => $this->rating,
-            'active' => $this->active
+            'active' => $this->active,
+            'comments_count' => $this->comments->count(),
         ];
     }
 }

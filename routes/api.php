@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
 use \App\Http\Controllers\Api\PostController;
 
 /*
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group( function () {
     });
     Route::post('logout',[AuthController::class,'logout'])->name('auth.logout');
     Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
+});
+
+Route::controller(CommentController::class)->group(function(){
+    Route::get('comment','index')->name('comment.index');
+    Route::post('comment','store')->name('comment.store');    
 });
 
 Route::controller(PostController::class)->group(function(){

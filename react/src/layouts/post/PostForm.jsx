@@ -47,6 +47,7 @@ export default function PostForm() {
         try {
             response = await axiosClient.post('/post/image_upload',data);
             const absoluteImageURL = `${window.location.origin}/${response.data}`;
+            console.log(response);
             setImageLink(absoluteImageURL);
             tmpFileLink.current.value = response.data;
         } catch(err){
