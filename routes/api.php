@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use \App\Http\Controllers\Api\PostController;
+use App\Http\Resources\UserResource;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ Route::post('login',[AuthController::class,'login'])->name('auth.login');
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::get('user',function(Request $request) {
-        return $request->user();
+        return response(new UserResource($request->user()));
     });
     Route::post('logout',[AuthController::class,'logout'])->name('auth.logout');
     Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);

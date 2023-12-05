@@ -9,9 +9,7 @@ import Pagination from '@mui/material/Pagination';
 import { _ } from "../general"
 import { useAuthContext } from "../contexts/AuthContextProvider";
 
-export default function Comment({parentId, parentType}){
-
-    const { user } = useAuthContext();
+export default function Comment({parentId, parentType, userName}){
 
     const [comments,setComments] = useState();
     const [loading,setLoading] = useState(false);
@@ -37,7 +35,7 @@ export default function Comment({parentId, parentType}){
                 const response = await axiosClient.post('comment',payLoad);
                 fetchComment();
                 commentRef.current.value = '';
-                authorRef.current.value = user?.name ?? '';
+                authorRef.current.value = userName ?? null;
                 setError(null);
 
             } catch(err) {
@@ -51,7 +49,7 @@ export default function Comment({parentId, parentType}){
 
     const fetchComment = async () => {
         try {
-            const comments = await axiosClient.get(`comment?parentId=${parentId}&page=${page}`);
+            const comments = await axiosClient.get(`comment?parent_id=${parentId}&parent_type=${parentType}&page=${page}`);
             const { data } = comments.data;
             setPage(comments.data.meta.current_page);
             setCount(comments.data.meta.last_page);
@@ -65,9 +63,9 @@ export default function Comment({parentId, parentType}){
 
     useEffect(()=>{
         setLoading(true);
-        authorRef.current.value = user?.name;
+        authorRef.current.value = userName ?? null;
         fetchComment();
-    },[page,user]);
+    },[page,userName]);
 
     return(
     <Paper sx={{padding: '2ch' }}>
@@ -102,7 +100,7 @@ export default function Comment({parentId, parentType}){
                 variant="outlined"
                 sx={{ marginBottom: '2ch' }}
                 type="text"
-                // required
+                required
                 inputProps={{ maxLength: 55 , minLength: 5 }}
                 name="author"
                 size="small"
@@ -118,7 +116,7 @@ export default function Comment({parentId, parentType}){
                 sx={{ marginBottom: '2ch' }}
                 multiline
                 maxRows={3}
-                // required
+                required
                 type="text"
                 inputProps={{ maxLength: 200 , minLength: 5 }}
                 name="comment"

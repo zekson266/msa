@@ -183,7 +183,7 @@ export default function PostShow() {
             </>)}
           </Await>
         </React.Suspense>
-        <Comment parentId={postId} parentType="Post" />
+        <Comment parentId={postId} parentType="Post" userName={user.name}/>
       </>
     );
 }

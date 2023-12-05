@@ -7,7 +7,7 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Post;
 
 class CommentController extends Controller
 {
@@ -17,8 +17,13 @@ class CommentController extends Controller
     public function index(Request $request)
     {
         //
+        $parent_type = 'App\Models\\' . $request->parent_type;
+
         return CommentResource::collection(
-            Comment::where('parent_id',$request->parentId)->paginate(50)
+            Comment::where('parent_id',$request->parent_id)
+                ->where('parent_type',$parent_type)
+                ->latest()
+                ->paginate(50)
         );
     }
 
@@ -27,11 +32,10 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'parent_id' => ['required'],
             'parent_type' => ['required'],
-            'author' => ['required','max:55','min:5', Rule::unique('users','name')->ignore(auth('api')->user()->id)],
+            'author' => ['required','max:55','min:5', Rule::unique('users','name')->ignore(optional(auth('api')->user())->id)],
             'comment' => ['max:200','min:5'],
         ]);
 

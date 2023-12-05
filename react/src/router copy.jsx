@@ -12,14 +12,10 @@ import { useAuthContext } from './contexts/AuthContextProvider';
 import Home from './layouts/Home';
 import PostLayout from './layouts/post/PostLayout';
 
-const RequireAuth = ({ children, group }) => {
+const RequireAuth = ({ children }) => {
     
-    const { token, user } = useAuthContext();
+    const { token } = useAuthContext();
     const location = useLocation();
-    console.log(token);//////////////////////
-    console.log(user);//////////////////////////////
-    if (user?.groups && user.groups.hasOwnProperty(group))
-        console.log('telepitu');
 
     if(token){
         return children;
@@ -42,7 +38,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/users',
-                element: (<RequireAuth group="admins"><Users /></RequireAuth>),
+                element: (<RequireAuth><Users /></RequireAuth>),
                 // loader
             },
             {
