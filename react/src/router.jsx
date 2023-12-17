@@ -7,27 +7,36 @@ import UserForm from './layouts/user/UserForm';
 import PostIndex, {PostIndexLoader} from './layouts/post/PostIndex';
 import PostShow, {PostShowLoader} from './layouts/post/PostShow';
 import PostForm, { PostFormAction, PostFormLoader } from './layouts/post/PostForm';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthContext } from './contexts/AuthContextProvider';
 import Home from './layouts/Home';
 import PostLayout from './layouts/post/PostLayout';
+
 
 const RequireAuth = ({ children, group }) => {
     
     const { token, user } = useAuthContext();
     const location = useLocation();
-    console.log(token);//////////////////////
-    console.log(user);//////////////////////////////
-    if (user?.groups && user.groups.hasOwnProperty(group))
-        console.log('telepitu');
-
-    if(token){
-        return children;
-    } else {
-        return <Navigate to='/login' state={{ from: location}} />;
+    const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      if (user === null) {
+        setLoading(true);
+      } else {
+        setLoading(false);
+      }
+    }, [user]);
+  
+    if (loading && token) {
+        return null; // Or return a loading spinner, etc.
+    }
+  
+    if (!token || !user || !user.groups || !user.groups.hasOwnProperty(group)) {
+      return <Navigate to='/login' state={{ from: location }} />;
     }
 
-}
+    return children;
+};
 
 const router = createBrowserRouter([
     {
@@ -42,7 +51,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/users',
-                element: (<RequireAuth group="admins"><Users /></RequireAuth>),
+                element: (<RequireAuth group="news_editor"><Users /></RequireAuth>),
                 // loader
             },
             {

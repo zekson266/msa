@@ -46,7 +46,7 @@ export default function Users() {
         setLoading(true);
         axiosClient.get(`/users?page=${page}&itemsPerPage=${itemsPerPage}`)
         .then(({data})=>{
-            console.log(data);
+            // console.log(data);
             setLoading(false);
             setUsers(data.data);
             setTotalPages(data.meta.last_page);

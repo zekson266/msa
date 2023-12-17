@@ -153,8 +153,8 @@ function MsaAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={ user.name ? handleOpenUserMenu : () => navigate('/login')   } sx={{ p: 0 }}>
-                <Avatar sx={{ bgcolor: user.name ? green[500] : orange[500] }}>{user.name ? user.name.toUpperCase().substring(0,2) : null}</Avatar>
+              <IconButton onClick={ user?.name ? handleOpenUserMenu : () => navigate('/login')   } sx={{ p: 0 }}>
+                <Avatar sx={{ bgcolor: user?.name ? green[500] : orange[500] }}>{user?.name ? user?.name.toUpperCase().substring(0,2) : null}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

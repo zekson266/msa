@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import axiosClient from "../axios-client";
 
 const AuthContext = createContext({
     user: null,
@@ -9,7 +10,8 @@ const AuthContext = createContext({
 
 export const ContextProvider = ({children}) => {
 
-    const [user,setUser] = useState({});
+    const [user, setUser] = useState(null);
+
     const [token,_setToken] = useState(localStorage.getItem('ACCESS_TOKEN'));
 
     const setToken = (token) => {
@@ -21,6 +23,23 @@ export const ContextProvider = ({children}) => {
             localStorage.removeItem('ACCESS_TOKEN');
         }
     }
+
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const response = await axiosClient.get('user');
+            const {data} = response;
+            setUser(data);
+          } catch (error) {
+            // Handle errors, e.g., set default user or show an error message
+            console.error("Error fetching user:", error);
+          }
+        };
+    
+        if (token) {
+          fetchUser();
+        }
+      }, []);
 
     return (
         <AuthContext.Provider value={{

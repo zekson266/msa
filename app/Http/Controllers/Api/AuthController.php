@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,7 +46,10 @@ class AuthController extends Controller
 
         $token = $user->createToken('main')->plainTextToken;
 
-        return response(compact('user','token'));
+        $user = new UserResource($user);
+
+        return response()->json(compact('user','token'));
+        // return response(compact('user','token'));
     }
     //=================================================================
     public function logout(Request $request){

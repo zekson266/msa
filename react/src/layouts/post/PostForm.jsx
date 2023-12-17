@@ -144,7 +144,7 @@ export default function PostForm() {
                         variant="outlined"
                         sx={{ marginBottom: '2ch' }}
                         multiline
-                        maxRows={25}
+                        rows={5}
                         required
                         type="text"
                         inputProps={{ maxLength: 2000 , minLength: 55 }}

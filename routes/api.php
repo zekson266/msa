@@ -23,6 +23,9 @@ Route::post('login',[AuthController::class,'login'])->name('auth.login');
 
 Route::middleware('auth:sanctum')->group( function () {
     Route::get('user',function(Request $request) {
+        // $user = new UserResource($request->user());
+
+        // return response()->json(compact('user'));
         return response(new UserResource($request->user()));
     });
     Route::post('logout',[AuthController::class,'logout'])->name('auth.logout');

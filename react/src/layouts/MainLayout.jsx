@@ -15,7 +15,7 @@ export default function MainLayout() {
       try{
           const response  = await axiosClient.get('user');
           const {data} = response;
-          setUser(data);
+          //setUser(data);
         } catch (err) {
           const response = err.response;
         }
